@@ -4,22 +4,26 @@ def get_ranges():
     ranges = text.split(",")
     return ranges
 
-def get_dividers(length):
-    dividers = [length]
+divisors_cache = {}
+def get_divisors(length):
+    if length in divisors_cache:
+        return divisors_cache[length]
+    divisors = [length]
     for i in range(2, length//2+1):
         if not length%i:
-            dividers.append(i)
-    return dividers
+            divisors.append(i)
+    divisors_cache[length] = divisors
+    return divisors
 
 def check_invalid(id_code):
     code_length = len(id_code)
-    dividers = get_dividers(code_length)
-    print(f"Checking ID code: {id_code} with dividers: {dividers}")
-    for divider in dividers:
+    divisors = get_divisors(code_length)
+    print(f"Checking ID code: {id_code} with divisors: {divisors}")
+    for divisor in divisors:
         check = True
-        chunk_len = code_length // divider
+        chunk_len = code_length // divisor
         base_pattern = id_code[0:chunk_len]
-        for i in range(1,divider):
+        for i in range(1,divisor):
             if id_code[i*chunk_len:(i+1)*chunk_len] != base_pattern:
                 check = False
                 break
