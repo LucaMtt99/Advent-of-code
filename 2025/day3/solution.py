@@ -4,14 +4,6 @@ def get_banks   ():
     banks = [[int(x) for x in line.strip()] for line in lines]
     return banks
 
-def get_max_joltage(bank):
-    max_value = max(bank)
-    max_value_index = bank.index(max_value)
-    if max_value_index == len(bank) - 1:
-        return 10*(max(bank[:-1])) + max_value
-    else:
-        return 10*max_value + max(bank[max_value_index+1:])
-
 def get_max_joltage(bank, n_batteries):
     if n_batteries == 1:
         return max(bank)
