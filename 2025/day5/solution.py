@@ -46,6 +46,6 @@ def main():
     all_fresh = find_number_of_all_fresh_products(fresh_products)
     print(f"Number of fresh products: {fresh_count}")
     print(f"Number of all fresh product IDs: {all_fresh}")
-
+    
 if __name__ == "__main__":
     main()
