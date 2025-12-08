@@ -1,4 +1,4 @@
-from scipy.cluster.hierarchy import  linkage
+from scipy.spatial import distance_matrix
 import numpy as np
 
 def get_boxes():
@@ -10,7 +10,8 @@ def get_boxes():
 
 def main():
     boxes = get_boxes()
-    linkage_matrix = linkage(boxes)
+    distances = distance_matrix(boxes, boxes)
+    print(distances)
     product_of_sizes = ...
     print(f"Product of top 3 clusters' size: {product_of_sizes}")
 
