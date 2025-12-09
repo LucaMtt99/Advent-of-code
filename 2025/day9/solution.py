@@ -44,9 +44,7 @@ def is_rect_valid(p1, p2, polygon):
     c2 = [p2[0], p1[1]]
     if not is_point_in_polygon(c1, polygon) or not is_point_in_polygon(c2, polygon):
         return False
-    rect_edges = [
-        (p1, c1), (c1, p2), (p2, c2), (c2, p1)
-    ]
+    rect_edges = [(p1, c1), (c1, p2), (p2, c2), (c2, p1)]
     n = len(polygon)
     for i in range(n):
         poly_p1 = polygon[i]
