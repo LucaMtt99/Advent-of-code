@@ -1,4 +1,7 @@
+from scipy.optimize import milp, LinearConstraint, Bounds
 from itertools import combinations_with_replacement
+import numpy as np
+import time
 
 def get_manuals():
     manuals = []
@@ -53,6 +56,24 @@ def check_configuration_with_joltages(manual, n):
                 return True
     return False
 
+def check_configuration_with_joltages_ilp(manual):    
+    buttons = manual["buttons"]
+    joltages = manual["joltages"]
+    n_buttons = len(buttons)
+    n_lights = len(joltages)
+    A = np.zeros((n_lights, n_buttons), dtype=int)
+    for btn_idx, button in enumerate(buttons):
+        for light in button:
+            A[light][btn_idx] += 1
+        c = np.ones(n_buttons)
+    constraints = LinearConstraint(A, joltages, joltages)
+    bounds = Bounds(0, np.inf) 
+    integrality = np.ones(n_buttons) 
+    result = milp(c=c, constraints=constraints, bounds=bounds, integrality=integrality)
+    if result.success:
+        return int(result.fun)
+    return None
+
 def configure_machine(manual, joltages):
     steps = 1
     if joltages:
@@ -71,7 +92,10 @@ def main():
     manuals = get_manuals()
     total_steps = sum(map(lambda m: configure_machine(m, False), manuals))
     print(f"Total steps to configure all machines: {total_steps}")
-    total_steps_with_joltages = sum(map(lambda m: configure_machine(m, True), manuals))
+    start_time = time.time()
+    total_steps_with_joltages = sum(map(check_configuration_with_joltages_ilp, manuals))
+    end_time = time.time()
+    print(f"Time taken with joltages: {end_time - start_time} seconds")
     print(f"Total steps to configure all machines with joltages: {total_steps_with_joltages}")
 
 if __name__ == "__main__":
