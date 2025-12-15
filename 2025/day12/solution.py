@@ -3,13 +3,14 @@ import re
 def get_data():
     shapes = dict()
     sections = []
-    with open("input1.txt") as f:
+    with open("input.txt") as f:
         for line in f:
             if re.match(r"^[0-9]+:", line):
                 current_key = int(line.strip()[:-1])
-                shapes[current_key] = []
+                shapes[current_key] = {"shape": [], "area": 0}
             elif line.startswith(".") or line.startswith("#"):
-                shapes[current_key].append([0 if c == "." else 1 for c in line.strip()])
+                shapes[current_key]["shape"].append([0 if c == "." else 1 for c in line.strip()])
+                shapes[current_key]["area"] += sum(shapes[current_key]["shape"][-1])
             elif not line.strip():
                 continue
             else:
@@ -22,9 +23,15 @@ def get_data():
                 sections.append(supp)
     return shapes, sections
 
-def check_fitting(section, shapes):
+def check_fitting(section, shapes): # Only works in this case, not generalized! (area_presents <= area coulld not fit!)
     w, h = section["w"], section["h"]
-    
+    area = w * h
+    area_presents = 0
+    for k in section["presents"].keys():
+        area_presents += shapes[k]["area"]*section["presents"][k]
+    if area_presents > area:
+        return 0
+    return 1
 
 def main():
     shapes, sections = get_data()  
